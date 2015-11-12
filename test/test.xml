@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+
+    </head>
+
+
+    <body>
+        <script language="JavaScript">
+
+            function wurstMitBohnen2 () {
+            document.writeln("Muh");
+            }
+
+        </script>
+        <div dot-for="var i = 0; i &lt; 10000; i++">
+            <div>
+                schubidu
+            </div>
+        </div>
+
+
+        <img dot-repeat="0"/>
+
+        <script language="JavaScript" dot-remote="remote">
+
+            "Dies kommt aus JavaScritp";
+
+        </script>
+
+
+
+    </body>
+
+
+</html>

@@ -7,13 +7,12 @@
  */
 
 
-
+use dotjs\template\TargetLanguageJavaScript;
 use dotjs\template\TemplateParser;
 
 require(__DIR__ . "/../../autoload.php");
 
-$tp = new TemplateParser();
-$reader = new XMLReader();
-$reader->xml(file_get_contents("template.xml"));
+$tp = new TemplateParser(new TargetLanguageJavaScript());
 
-highlight_string($tp->parse($reader));
+
+highlight_string($tp->parse(file_get_contents("template.xml")));

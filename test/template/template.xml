@@ -1,13 +1,32 @@
 <div1 dot-for="var i=0; i &amp; 5; i++">
 
-        <div2>
-            asdf
-        </div2>
 
 
+    <script language="JavaScript" remote="yes">
+        TEMPLATE.use("")
+    </script>
+    <div2 name="[[ i ]]">
+        asdf
+        <img src="wurst" />
+    </div2>
 
-    <div3 dot-for="var i2=0; i2 &amp; 5; i2++">
+
+    <div2 name="[[ i ]]">
+        asdf
+        <img src="wurst" />
+    </div2>
+
+    <div3 dot-repeat="curName in arrayName index by wurst">
         Some Output
     </div3>
+
+
+    <block name="wurst">
+        <div>
+            Some Block content
+        </div>
+
+    </block>
+
 
 </div1>

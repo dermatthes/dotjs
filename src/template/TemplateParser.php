@@ -11,87 +11,125 @@
     class TemplateParser {
 
 
-        private $mJsHead = NULL;
-        private $mJsFoot = NULL;
+        /**
+         * @var TargetLanguage
+         */
+        private $mTargetLanguage;
 
-        public function isBlockElement (\XMLReader $reader) {
-            $dotFor = $reader->getAttribute("dot-for");
-            if ($dotFor !== NULL) {
-                $this->mJsHead = "for({$dotFor}){";
-                $this->mJsFoot = "};";
-                return true;
-            }
-            return false;
+
+        public function __construct (TargetLanguage $targetLanguage) {
+            $this->mTargetLanguage = $targetLanguage;
         }
+
+
+
+        private function generatePrintedCode ($codePrePost, $generatedCode, $postContent, $childContent, $readerDepth) {
+
+            $code = "";
+            if (is_array($codePrePost))
+                $code  .= "\n" . $codePrePost[0];
+
+            $plusTab = "";
+            if (is_array($codePrePost))
+                $plusTab = "\t";
+
+            if (is_string($codePrePost)) {
+                $code .= $codePrePost;
+            } else {
+                if ($childContent === "")
+                    $generatedCode .= $postContent;
+                $code .= "\n\t{$plusTab}" . $this->mTargetLanguage->transformInlineToCode($generatedCode) ;
+                if ($childContent !== "") {
+                    $code .= $childContent;
+                    $code .= "\n\t{$plusTab}" . $this->mTargetLanguage->transformInlineToCode($postContent);
+                }
+            }
+            if (is_array($codePrePost))
+                $code .= "\n" . $codePrePost[1];
+
+            $indent = str_repeat("\t", $readerDepth);
+
+            $code = str_replace("\n", "\n{$indent}", $code);
+            return $code;
+        }
+
 
         /**
-         * @var TemplateParser
+         * Parse
+         *
+         * @param $xmlInput
+         * @return string
+         * @throws \Exception
          */
-        private $mParent;
-
-        public function setParent (TemplateParser $parent) {
-            $this->mParent = $parent;
+        public function parse ($xmlInputString) {
+            $xmlReader = new \XMLReader();
+            $xmlReader->xml($xmlInputString);
+            $xmlReader->read(); // Read till first Element before pushing to parseRecursive.
+            if ($xmlReader->nodeType !== \XMLReader::ELEMENT)
+                throw new \InvalidArgumentException("First tag must be ELEMENT-type: type: {$xmlReader->nodeType} found");
+            return $this->parseRecursive($xmlReader);
         }
 
 
-        private $mChildContent = NULL;
-
-        public function setChildContent ($content) {
-            $this->mChildContent = $content;
-        }
-
-
-
-        public function parse (\XMLReader $reader, $readerDepth = 0) {
-            $writer = new \XMLWriter();
-            $writer->openMemory();
-
-            $preContent = "";
-
+        private function parseRecursive (\XMLReader $reader, $readerDepth = 0) {
+            $generatedCode = "";
+            $codePrePost = NULL;
             $childContent = "";
 
-            $depth = 0;
+            $debugMyOpenedName = NULL;
+
+
+
+
+            $isEmptyElement = $reader->isEmptyElement;
+            $debugMyOpenedName = $reader->name;
+            $generatedCode .= "<{$reader->name}";
+            $attributeBag = new XmlAttributeBag();
+
+            while($reader->moveToNextAttribute()) {
+                $attributeBag->injectAttribute($reader->name, $reader->value);
+            }
+            $codePrePost = $this->mTargetLanguage->getPrePostCodeForElement($debugMyOpenedName, $attributeBag, $reader);
+
+            echo "CodePrePost: "; print_r ($codePrePost);
+
+            foreach ($attributeBag->getAttributesArr() as $cur) {
+                $generatedCode .= " {$cur[0]}=\"{$cur[1]}\"";
+            }
+
+            if ($isEmptyElement) {
+                $generatedCode .= "/>";
+                return $this->generatePrintedCode($codePrePost, $generatedCode, "", "", $readerDepth);
+            } else {
+                $generatedCode .= ">";
+            }
+
             while ($reader->read()) {
-                echo "\n<br>R:{$readerDepth} D:$depth type={$reader->nodeType} name={$reader->name} value={$reader->value} prefix={$reader->prefix} namesapceURI={$reader->namespaceURI} localName={$reader->localName}";
+                echo "\n<br>R:{$readerDepth} type={$reader->nodeType} name={$reader->name} value={$reader->value} prefix={$reader->prefix} namesapceURI={$reader->namespaceURI} localName={$reader->localName}";
 
                 switch ($reader->nodeType) {
                     case \XMLReader::ELEMENT:
-
-                        $writer->startElement($reader->name);
-
-                        if ( ! $reader->isEmptyElement)
-                            $depth++;
-                        echo "OPEN: $depth";
-                        if ($this->isBlockElement($reader)) {
-                            echo "<br>isblock";
-                            $preContent = $writer->outputMemory(true); // Save and flush
-                            echo "\nPre-Content: ";
-                            highlight_string($preContent);
-
-                            $childParser = new self();
-                            $childParser->setParent($this);
-                            $childContent = $childParser->parse($reader, $readerDepth+1);
-                        }
+                        $childContent .= $this->parseRecursive($reader, $readerDepth+1);
                         break;
 
                     case \XMLReader::TEXT:
-                        $writer->writeRaw($reader->value);
+                        $generatedCode .= $reader->value;
                         break;
 
                     case \XMLReader::WHITESPACE:
-                        $writer->writeRaw($reader->value);
+                        $generatedCode .= $reader->value;
                         break;
 
                     case \XMLReader::SIGNIFICANT_WHITESPACE:
-                        $writer->writeRaw($reader->value);
+                        $generatedCode .= $reader->value;
                         break;
 
                     case \XMLReader::CDATA:
-                        $writer->writeCdata($reader->value);
+                        $generatedCode .= "<![CDATA[{$reader->value}]]>";
                         break;
 
                     case \XMLReader::ENTITY_REF:
-                        $writer->writeDtd($reader->name);
+
                         //  writer.WriteEntityRef(reader.Name);
 
                         break;
@@ -105,32 +143,19 @@
 
                                       break;*/
 
-                    case \XMLReader::DOC_TYPE:
-                        $writer->writeDtd($reader->name, $reader->getAttribute("PUBLIC"), $reader->getAttribute("SYSTEM"), $reader->value);
-                        break;
+
 
                     case \XMLReader::COMMENT:
-                        $writer->writeComment($reader->value);
+                        $generatedCode .= "<!-- {$reader->value} -->";
                         break;
 
                     case \XMLReader::END_ELEMENT:
-                        $writer->fullEndElement();
-                        $depth--;
-                        echo "END Depth: $depth";
-                        if ($depth <= 1) {
-                            echo "RETURN";
-                            $postContent = $writer->flush(true);
-                            $code  = "\n" . $this->mJsHead;
-                            $code .= "\n\t" .  'PHP.print("' . str_replace("\n", '\n', addslashes($preContent)) . '");';
-                            $code .= "\n\t" . $childContent;
-                            $code .= "\n\t" . 'PHP.print("' . str_replace("\n", '\n', addslashes($postContent)) . '");';
-                            $code .= "\n" . $this->mJsFoot;
-                            highlight_string($code);
-                            if ($this->mParent !== NULL)
-                                $this->mParent->setChildContent($code);
-
-                            return $code;
-                        }
+                        if ($debugMyOpenedName === NULL)
+                            throw new \Exception("Trying to close empty element");
+                        if ($debugMyOpenedName !== $reader->name)
+                            throw new \Exception("Element {$debugMyOpenedName} is beeing closed by {$reader->name}");
+                        $postContent = "</{$reader->name}>";
+                        return $this->generatePrintedCode($codePrePost, $generatedCode, $postContent, $childContent, $readerDepth);
                         break;
 
                     default:

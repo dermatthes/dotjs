@@ -7,7 +7,7 @@
  */
 
 
-    namespace dotjs\parser;
+    namespace dotjs\template;
 
     class XmlAttributeBag {
 

@@ -32,11 +32,48 @@
                 return $reader->readInnerXml();
             }
 
+
+            if ($tag == "template") {
+                $pre = "";
+                $template = $attributes->getAttr("use");
+                if ($template !== null)
+                    $pre = "\nDOT_BRIDGE.FS_USE_TEMPLATE('$template');\n";
+
+                return "$pre";
+            }
+
+
+            if ($tag == "block") {
+                $name = $attributes->getAttr("dot-block");
+                if (trim ($name) == "")
+                    return "Cannot parse block-name '$name'";
+                return ["if(typeof BLOCK.$name === 'undefined'){BLOCK.$name = function () {", "} };"];
+            }
+
+            if ($attributes->getAttr("dot-block")) {
+                $name = $attributes->getAttr("dot-block");
+                if (trim ($name) == "")
+                    return "Cannot parse block-name '$name'";
+                return ["if(typeof BLOCK.$name === 'undefined'){ BLOCK.$name = function () {", "}};\nBLOCK.$name();"];
+            }
+
+            if ($tag == "macro") {
+                $call = $attributes->getAttr("call");
+                if ( ! preg_match ('/^([a-z0-9\_]+)\s*\\(.*\\)/ims', $call, $matches)) {
+                    return "Cannot parse $call";
+                }
+                $fnName = $matches[1];
+                $params = $matches[2];
+                return ["MACRO.$fnName = function($params){", "};"];
+            }
+
             if (($val = $attributes->getAttr("dot-if")) !== NULL)
                 return ["if({$val}){", "};"];
 
             if (($val = $attributes->getAttr("dot-for")) !== NULL)
                 return ["for({$val}){", "};"];
+
+
 
             if (($val = $attributes->getAttr("dot-repeat")) !== NULL) {
                 if ( ! preg_match ('/([a-z0-9\.\_]+)\s+in\s+([a-z0-9\.\_]+)(|\s+index\s+by\s+([a-z0-9\_]+))/ims', $val, $matches)) {
@@ -54,10 +91,7 @@
 
 
         private function _onInlineContent ($code) {
-
-
-
-            return '");PHP.print(' . $code . ');PHP.print("';
+            return '");DOT.print(' . $code . ');DOT.print("';
         }
 
         public function transformInlineToCode ($content) {
@@ -85,9 +119,11 @@
                 $content = preg_replace_callback("/{$startTag}(.*?){$endTag}/ims", function ($matches) {
                     return $this->_onInlineContent($matches[1]);
                 }, $content);
+            } else {
+                $content = addslashes($content);
             }
 
-            $code = "\n\tPHP.print(";
+            $code = "\n\tDOT.print(";
             $blocks = [];
             foreach (explode("\n", $content) as $curLine) {
                 $blocks[] = '"' . $curLine . '"';

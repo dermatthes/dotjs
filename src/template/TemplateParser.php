@@ -34,7 +34,11 @@
                 $plusTab = "\t";
 
             if (is_string($codePrePost)) {
+                if ($childContent !== "") {
+                    $code .= $childContent;
+                }
                 $code .= $codePrePost;
+
             } else {
                 if ($childContent === "")
                     $generatedCode .= $postContent;

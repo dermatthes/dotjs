@@ -2,6 +2,11 @@
 
 dotJS compiles angular-style templates on server-side.
 
+Requirements:
+
+- *PHP 5.5*: PHP Interpreter
+- *V8Js*: The V8 connector for PHP
+
 ## dotJS for template-designers
 
 This section will show how to use dotJS to compile your html content to javascript and

@@ -69,7 +69,7 @@
             $xmlReader = new \XMLReader();
             $xmlReader->xml($xmlInputString);
             $xmlReader->read(); // Read till first Element before pushing to parseRecursive.
-            if ($xmlReader->nodeType !== \XMLReader::ELEMENT)
+            if ($xmlReader->nodeType !== \XMLReader::ELEMENT && $xmlReader->nodeType !== \XMLReader::DOC_TYPE)
                 throw new \InvalidArgumentException("First tag must be ELEMENT-type: type: {$xmlReader->nodeType} found");
             return $this->parseRecursive($xmlReader);
         }
@@ -95,7 +95,7 @@
             }
             $codePrePost = $this->mTargetLanguage->getPrePostCodeForElement($debugMyOpenedName, $attributeBag, $reader);
 
-            echo "CodePrePost: "; print_r ($codePrePost);
+            //echo "CodePrePost: "; print_r ($codePrePost);
 
             foreach ($attributeBag->getAttributesArr() as $cur) {
                 $generatedCode .= " {$cur[0]}=\"{$cur[1]}\"";
@@ -109,7 +109,9 @@
             }
 
             while ($reader->read()) {
-                echo "\n<br>R:{$readerDepth} type={$reader->nodeType} name={$reader->name} value={$reader->value} prefix={$reader->prefix} namesapceURI={$reader->namespaceURI} localName={$reader->localName}";
+                //echo "\n<br>R:{$readerDepth} type={$reader->nodeType} name={$reader->name} value={$reader->value} prefix={$reader->prefix} namesapceURI={$reader->namespaceURI} localName={$reader->localName}";
+
+
 
                 switch ($reader->nodeType) {
                     case \XMLReader::ELEMENT:

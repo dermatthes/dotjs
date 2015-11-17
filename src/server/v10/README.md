@@ -59,7 +59,7 @@ DOT.DB.query("SELECT * FROM User WHERE id > ?", 5).forEach(
 
 Lets you read, modify and change HTTP headers of the response.
 
-### 
+### Controller Extension
 
 
 

@@ -16,6 +16,7 @@
     use dotjs\server\core\FileLoader;
     use dotjs\server\v10\js\DB\Feature_DB;
     use dotjs\template\TargetLanguageJavaScript;
+    use dotjs\template\TemplateControllerExtractor;
     use dotjs\template\TemplateParser;
 
     class BridgeV10 implements Bridge {
@@ -56,7 +57,9 @@
             // LOW LEVEL SYSTEM EXTENSIONS
 
             $v8->registerClass("OUT", $this->mFeatureOut = new Feature_OUT());
-            $v8->registerClass("FS",  $v8->FS =  $this->mFeatureFs = new Feature_FS($v8, $loader, $this->mParser));
+            $v8->registerClass("FS",  $this->mFeatureFs = new Feature_FS($v8, $loader, $this->mParser));
+            $v8->registerClass("REQUEST",  new Feature_REQUEST($v8));
+
             $v8->registerClass("DB",  new Feature_DB($v8));
 
             $v8->executeString(file_get_contents(__DIR__ . "/js/boot.js"));
@@ -94,6 +97,22 @@
 
         public function getOutput () {
             return $this->mFeatureOut->getOutBuffer();
+        }
+
+
+        public function runController ($templateName, $controller, $params=[]) {
+            $extractor = new TemplateControllerExtractor();
+            $jsCode = $extractor->parse($this->mFileLoader->getContents($templateName));
+
+            try {
+                $this->mV8->executeString($jsCode);
+            } catch (\V8JsException $e) {
+                echo "Fehler in: $jsCode";
+                throw $e;
+            }
+
+            $data = $this->mV8->executeString("JSON.stringify(DOT.CTRL.{$controller}());");
+            echo $data;
         }
 
 

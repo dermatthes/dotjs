@@ -59,7 +59,7 @@
 
             if ($tag == "macro") {
                 $call = $attributes->getAttr("call");
-                if ( ! preg_match ('/^([a-z0-9\_]+)\s*\\(.*\\)/ims', $call, $matches)) {
+                if ( ! preg_match ('/^([a-z0-9\_]+)\s*\\((.*)\\)/ims', $call, $matches)) {
                     return "Cannot parse $call";
                 }
                 $fnName = $matches[1];
@@ -126,7 +126,7 @@
             $code = "\n\tDOT.print(";
             $blocks = [];
             foreach (explode("\n", $content) as $curLine) {
-                $blocks[] = '"' . $curLine . '"';
+                $blocks[] = '"\n' . $curLine . '"';
             }
             $code .= implode("\n\t\t+ ", $blocks);
             $code .= ');';

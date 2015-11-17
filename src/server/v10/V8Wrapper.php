@@ -22,8 +22,8 @@ class V8Wrapper {
 
 
     public function executeString ($string) {
-        echo "\n<br>V8-Executing:";
-        highlight_string($string);
+        //echo "\n<br>V8-Executing:";
+        //highlight_string($string);
         $this->callTrace[] = $string;
         return $this->mV8->executeString($string);
     }

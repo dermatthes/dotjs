@@ -19,9 +19,49 @@ var BLOCK = function(){};
  */
 var MACRO = function(){};
 
+var __DOT = {};
+
+
+/**
+ * Method to disable write-protection of PHP-Objects
+ *
+ * @param obj
+ * @returns {*}
+ */
+function copyClone(obj) {
+    if(obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
+        return obj;
+
+    var temp = {};
+
+    for(var key in obj) {
+        if(Object.prototype.hasOwnProperty.call(obj, key)) {
+            obj['isActiveClone'] = null;
+            temp[key] = copyClone(obj[key]);
+            delete obj['isActiveClone'];
+        }
+    }
+
+    return temp;
+}
 
 
 var DOT = {
+
+
+
+    CTRL: {},
+
+    /**
+     * The original Request
+     *
+     * @type {{get: {}, post: {}, json: {data: {}, event:{}}, headers: {} }}
+     */
+    get REQUEST () {
+        if (typeof __DOT.REQUEST === "undefined")
+            __DOT.REQUEST = copyClone(DOT_BRIDGE.REQUEST.GET());
+        return __DOT.REQUEST;
+    },
 
     /**
      * Output string to outputBuffer
@@ -30,6 +70,15 @@ var DOT = {
      */
     print: function (stringToPrint) {
         DOT_BRIDGE.OUT.OUT_PRINT(stringToPrint);
+    },
+
+    /**
+     * Dump the data-structure
+     *
+     * @param data
+     */
+    dump: function (data) {
+        DOT_BRIDGE.OUT.DUMP(data);
     },
 
     template: function (fileName) {
@@ -60,6 +109,7 @@ var DOT = {
     }
 
 };
+
 
 
 

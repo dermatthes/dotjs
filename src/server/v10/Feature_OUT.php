@@ -25,6 +25,12 @@ class Feature_OUT {
     }
 
 
+    public function DUMP ($data) {
+        echo "Dump request:";
+        print_r($data);
+    }
+
+
     /**
      * DOT_BRIDGE.FS_INCLUDE()
      * -> FS.include()

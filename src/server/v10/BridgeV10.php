@@ -45,39 +45,39 @@
 
         public function __construct (FileLoader $loader) {
             $v8 = new V8Wrapper();
-            //$v8->registerExtension("bootv10", file_get_contents(__DIR__ . "/boot.js"), array(), true);
-
-            $v8->executeString(file_get_contents(__DIR__ . "/boot.js"));
+            $v8->executeString(file_get_contents(__DIR__ . "/js/boot.js"));
 
             $this->mFileLoader = $loader;
             $this->mParser = new TemplateParser(new TargetLanguageJavaScript());
 
-            $extensionClasses = [
+            // LOW LEVEL SYSTEM EXTENSIONS
+            $extension = [
                 $this->mFeatureOut = new Feature_OUT(),
                 $this->mFeatureFs = new Feature_FS($v8, $loader, $this->mParser)
             ];
 
 
-
-
-
-            $this->mV8 = $v8;
-
-
-
-            foreach ($extensionClasses as $curObj) {
-                $reflection = new \ReflectionObject($curObj);
-                foreach ($reflection->getMethods() as $method) {
-                    if ( ! $method->isPublic())
+            foreach ($extension as $curExtension) {
+                $ref = new \ReflectionObject($curExtension);
+                foreach ($ref->getMethods() as $curMethod) {
+                    $name = $curMethod->getName();
+                    echo "LOADING $name";
+                    if ( ! $curMethod->isPublic())
                         continue;
-                    $fnName = $method->getName();
-                    $v8->registerCallback($fnName, function () use ($curObj, $fnName) {
-                        return call_user_func_array([$curObj, $fnName], func_get_args());
+                    if ( ! preg_match ("/^[A-Z0-9_]+$/", $curMethod->getName()))
+                        continue;
+
+
+
+
+                    $v8->registerCallback($name, function () use ($curExtension, $name) {
+                        return call_user_func_array([$curExtension, $name], func_get_args());
                     });
                 }
             }
 
 
+            $this->mV8 = $v8;
         }
 
 
@@ -126,7 +126,11 @@
             // Run the Templates
             while (($nextTemplate = $this->mFeatureFs->getNextTemplate()) !== NULL) {
                 $this->mFeatureFs->clearNextTemplate();
-                $code = $this->mParser->parse($this->mFileLoader->getContents($nextTemplate));
+                $code ="(function(){\n";
+                $code .= "\tvar __DIR__ = '" . dirname($nextTemplate) . "';\n";
+                $code .= "\tvar __FILE__ = '" . $nextTemplate . "';\n";
+                $code .= $this->mParser->parse($this->mFileLoader->getContents($nextTemplate));
+                $code .= "})();\n";
                 $this->mV8->executeString($code);
 
             }

@@ -37,7 +37,7 @@
                 $pre = "";
                 $template = $attributes->getAttr("use");
                 if ($template !== null)
-                    $pre = "\nDOT_BRIDGE.FS_USE_TEMPLATE('$template');\n";
+                    $pre = "\nDOT_BRIDGE.FS.USE_TEMPLATE('$template');\n";
 
                 return "$pre";
             }

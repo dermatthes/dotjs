@@ -20,7 +20,7 @@ var BLOCK = function(){};
 var MACRO = function(){};
 
 
-
+DOT_BRIDGE.OUT_PRINT("wurst");
 
 var DOT = {
 
@@ -30,11 +30,11 @@ var DOT = {
      * @param stringToPrint
      */
     print: function (stringToPrint) {
-        DOT_BRIDGE.OUT_PRINT(stringToPrint);
+        DOT_BRIDGE.OUT.OUT_PRINT(stringToPrint);
     },
 
     template: function (fileName) {
-        DOT_BRIDGE.FS_USE_TEMPLATE(fileName);
+        DOT_BRIDGE.FS.USE_TEMPLATE(fileName);
     },
 
     /**
@@ -42,12 +42,22 @@ var DOT = {
      *
      * @param fileName
      */
-    require: function (fileName) {
-        DOT_BRIDGE.FS_INCLUDE(fileName);
+    include: function (fileName) {
+        DOT_BRIDGE.FS.FS_INCLUDE(fileName);
+    },
+
+    /**
+     * Include a server-side extendsion located
+     * beneath js/name/name2.js
+     *
+     * @param {String} name
+     */
+    extension: function (name) {
+        DOT_BRIDGE.FS.USE_EXTENSION(name);
     },
 
     fileGetContents: function (fileName) {
-        return DOT_BRIDGE.FS_FILE_GET_CONTENTS(fileName);
+        return DOT_BRIDGE.FS.FILE_GET_CONTENTS(fileName);
     }
 
 };

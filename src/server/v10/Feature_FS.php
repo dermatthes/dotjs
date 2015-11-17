@@ -50,6 +50,10 @@
             $this->mV8->executeString($code);
         }
 
+        public function FS_USE_EXTENSION($name) {
+
+        }
+
 
         private $mNextTemplate = NULL;
 

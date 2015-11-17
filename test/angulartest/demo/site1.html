@@ -9,12 +9,14 @@
 
     <block dot-block="content">
         <script language="JavaScript" remote="yes">
-            DOT.CTRL.myController = function (name) {
+
+            DOT.CTRL.someAction = function (name) {
                 var data2 = DOT.REQUEST.json.data;
                 data2.someData = data2.someText;
                 data2.wurst = "mu4h";
                 return data2;
             }
+
         </script>
         <script language="JavaScript">
 
@@ -30,7 +32,7 @@
 
             <input type="text" ng-model="test.someText"/>
 
-            Dies ist der {{ test.someData }} überschriebene Content <a href="" ng-click="test.call('myController', $event);">Click mich</a>
+            Dies ist der {{ test.someData }} überschriebene Content <a href="" ng-click="test.call('someAction', $event);">Click mich</a>
         </div>
 
 

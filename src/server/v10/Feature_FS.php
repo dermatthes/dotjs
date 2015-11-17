@@ -45,8 +45,11 @@
          */
         public function FS_INCLUDE($fileName) {
             // Overwrite the __MAIN - BLock of original Template
-
-            $code = $this->mFileLoader->getContents($fileName);
+            $code ="(function(){\n";
+            $code .= "\tvar __DIR__ = '" . dirname($fileName) . "';\n";
+            $code .= "\tvar __FILE__ = '" . $fileName . "';\n";
+            $code .= $this->mFileLoader->getContents($fileName);
+            $code .= "})();\n";
             $this->mV8->executeString($code);
         }
 
@@ -58,7 +61,7 @@
         private $mNextTemplate = NULL;
 
 
-        public function FS_USE_TEMPLATE ($fileName) {
+        public function USE_TEMPLATE ($fileName) {
             if ($this->mNextTemplate !== NULL)
                 throw new \InvalidArgumentException("You cannot extend to more than one template. Use useTemplate only once per template");
             $this->mNextTemplate = $fileName;

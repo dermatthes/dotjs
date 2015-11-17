@@ -12,6 +12,15 @@
 
     interface FileLoader {
 
+
+        /**
+         * Sets the base path for the 'dot://' directory
+         *
+         * @param $dir
+         * @return mixed
+         */
+        public function setExtensionRoot ($dir);
+
         /**
          * Load the contents required by DOT.fileGetContents(fileName) and DOT.require(fileName) and DOT.run(fileName)
          *

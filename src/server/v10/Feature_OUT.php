@@ -20,7 +20,7 @@ class Feature_OUT {
 
     private $mOmitPrint = FALSE;
 
-    public function OUT_SET_OMIT_PRINT ($val) {
+    public function SET_OMIT_PRINT ($val) {
         $this->mOmitPrint = $val;
     }
 

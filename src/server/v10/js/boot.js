@@ -20,7 +20,6 @@ var BLOCK = function(){};
 var MACRO = function(){};
 
 
-DOT_BRIDGE.OUT_PRINT("wurst");
 
 var DOT = {
 

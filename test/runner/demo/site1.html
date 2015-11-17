@@ -12,6 +12,14 @@
 
     <block dot-block="Wurst">
         Dies ist der überschriebene Content
+        <script language="JavaScript" remote="yes">
+
+            DOT.include("dot://DB/DB.js");
+            DOT.DB.query("SELECT * FROM Users").forEach(function (data) {
+                DOT.print("Muh ");
+            }).exec();
+
+        </script>
     </block>
 
 </template>

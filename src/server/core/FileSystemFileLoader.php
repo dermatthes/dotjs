@@ -17,6 +17,14 @@ class FileSystemFileLoader implements FileLoader {
         $this->mRootDir = $rootDir;
     }
 
+
+    private $mExtensionRoot = NULL;
+
+    public function setExtensionRoot ($dir) {
+        $this->mExtensionRoot = $dir;
+    }
+
+
     /**
      * Load the contents required by DOT.fileGetContents(fileName) and DOT.require(fileName) and DOT.run(fileName)
      *
@@ -24,7 +32,11 @@ class FileSystemFileLoader implements FileLoader {
      * @return mixed
      */
     public function getContents($fileName) {
-        $fqFileName = $this->mRootDir . "/" . $fileName;
+        if (substr($fileName, 0, 6) == "dot://") {
+            $fqFileName = $this->mExtensionRoot . "/" . substr($fileName, 6);
+        } else {
+            $fqFileName = $this->mRootDir . "/" . $fileName;
+        }
 
         if ( ! file_exists($fqFileName))
             throw new \InvalidArgumentException("Filename '$fileName': Not existing");

@@ -14,6 +14,7 @@
 
     use dotjs\server\core\Bridge;
     use dotjs\server\core\FileLoader;
+    use dotjs\server\v10\js\DB\Feature_DB;
     use dotjs\template\TargetLanguageJavaScript;
     use dotjs\template\TemplateParser;
 
@@ -45,36 +46,20 @@
 
         public function __construct (FileLoader $loader) {
             $v8 = new V8Wrapper();
-            $v8->executeString(file_get_contents(__DIR__ . "/js/boot.js"));
 
+
+            $loader->setExtensionRoot(__DIR__ . "/js");
             $this->mFileLoader = $loader;
+
             $this->mParser = new TemplateParser(new TargetLanguageJavaScript());
 
             // LOW LEVEL SYSTEM EXTENSIONS
-            $extension = [
-                $this->mFeatureOut = new Feature_OUT(),
-                $this->mFeatureFs = new Feature_FS($v8, $loader, $this->mParser)
-            ];
 
+            $v8->registerClass("OUT", $this->mFeatureOut = new Feature_OUT());
+            $v8->registerClass("FS",  $v8->FS =  $this->mFeatureFs = new Feature_FS($v8, $loader, $this->mParser));
+            $v8->registerClass("DB",  new Feature_DB($v8));
 
-            foreach ($extension as $curExtension) {
-                $ref = new \ReflectionObject($curExtension);
-                foreach ($ref->getMethods() as $curMethod) {
-                    $name = $curMethod->getName();
-                    echo "LOADING $name";
-                    if ( ! $curMethod->isPublic())
-                        continue;
-                    if ( ! preg_match ("/^[A-Z0-9_]+$/", $curMethod->getName()))
-                        continue;
-
-
-
-
-                    $v8->registerCallback($name, function () use ($curExtension, $name) {
-                        return call_user_func_array([$curExtension, $name], func_get_args());
-                    });
-                }
-            }
+            $v8->executeString(file_get_contents(__DIR__ . "/js/boot.js"));
 
 
             $this->mV8 = $v8;

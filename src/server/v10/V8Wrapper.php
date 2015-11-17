@@ -33,4 +33,9 @@ class V8Wrapper {
         $this->mV8->$name = $callable;
     }
 
+
+    public function registerClass ($name, $object) {
+        $this->mV8->$name = $object;
+    }
+
 }

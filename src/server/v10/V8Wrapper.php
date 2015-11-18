@@ -21,11 +21,11 @@ class V8Wrapper {
     private $callTrace = [];
 
 
-    public function executeString ($string) {
+    public function executeString ($string, $identifier="V8Js::executeString()") {
         //echo "\n<br>V8-Executing:";
         //highlight_string($string);
         $this->callTrace[] = $string;
-        return $this->mV8->executeString($string);
+        return $this->mV8->executeString($string, $identifier);
     }
 
 

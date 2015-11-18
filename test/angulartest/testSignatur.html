@@ -1,0 +1,42 @@
+<script language="JavaScript">
+
+    // Some Text
+    var fn = function  (param1, param2) {
+
+    };
+
+
+
+    function getCallParams (fn, params, injections) {
+        var re = /function\s+(.*?)\((.*?)\)/;
+        var signature = fn.toString();
+        console.log (signature.match(re));
+
+        var paramNames = signature.match(re)[2].split(/,\s*/);
+
+        var paramI = 0;
+
+        var actualParams = [];
+        for (var i = 0; i < paramNames.length; i++) {
+            var curParamName = paramNames[i];
+            if (typeof injections[curParamName] !== "undefined") {
+                actualParams.push(injections[curParamName]);
+                continue;
+            }
+            actualParams.push(params[paramI++]);
+        }
+        return actualParams;
+    }
+
+
+
+
+
+
+
+
+
+
+    console.log(fn.toString());
+
+</script>

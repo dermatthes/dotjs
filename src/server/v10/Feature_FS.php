@@ -66,7 +66,7 @@
             $code .= "\tvar __FILE__ = '" . $fileName . "';\n";
             $code .= $this->mFileLoader->getContents($fileName);
             $code .= "})();\n";
-            $this->mV8->executeString($code);
+            $this->mV8->executeString($code, $fileName);
         }
 
 

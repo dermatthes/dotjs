@@ -74,6 +74,21 @@ var DOT = {
         return DOT.__CACHE.ENV;
     },
 
+
+    /**
+     * Called whenever a action is called
+     *
+     * Default behaviour: Call the action and return
+     * the return value.
+     *
+     * @param action
+     * @param params
+     */
+    dispatchAjaxRequest: function (action, params) {
+        return JSON.stringify((new CTRL())[action].call(action, params));
+    },
+
+
     /**
      * Output string to outputBuffer
      *
@@ -129,6 +144,8 @@ var DOT = {
     }
 
 };
+
+
 
 
 

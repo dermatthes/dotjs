@@ -112,12 +112,16 @@
                 throw $e;
             }
 
-            for ($i=0; $i<count ($params); $i++) {
-                $params[$i] = "\"" . addslashes($params[$i]) . "\"";
-            }
-            $paramsStr = implode(", ", $params);
+            $action = addslashes($action);
 
-            $data = $this->mV8->executeString("JSON.stringify((new CTRL()).{$action}($paramsStr));");
+
+            try {
+                $jsCode = "DOT.dispatchAjaxRequest('$action', " . json_encode($params) . ")";
+                $data = $this->mV8->executeString($jsCode, $jsCode);
+            } catch (\V8JsException $e) {
+                echo "Fehler in: $jsCode";
+                throw $e;
+            }
             echo $data;
         }
 

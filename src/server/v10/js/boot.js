@@ -3,6 +3,7 @@
  */
 
 
+
 /**
  * All Block-Elements go here
  *
@@ -19,38 +20,38 @@ var BLOCK = function(){};
  */
 var MACRO = function(){};
 
-var __DOT = {};
+
 
 
 /**
- * Method to disable write-protection of PHP-Objects
+ * Local Controller
  *
- * @param obj
- * @returns {*}
+ * register actions here using
+ *
+ * CTRL.prototype.<someAction> = function () {};
+ *
+ * @constructor
  */
-function copyClone(obj) {
-    if(obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
-        return obj;
+var CTRL = function () {
 
-    var temp = {};
-
-    for(var key in obj) {
-        if(Object.prototype.hasOwnProperty.call(obj, key)) {
-            obj['isActiveClone'] = null;
-            temp[key] = copyClone(obj[key]);
-            delete obj['isActiveClone'];
-        }
+    /**
+     * Return a list of registered Actions
+     *
+     * @return {string[]}
+     */
+    this.getActions = function () {
+        return Object.getOwnPropertyNames(CTRL.prototype).filter(function (name) { return typeof CTRL.prototype[name] === "function"; });
     }
+};
 
-    return temp;
-}
+
+
 
 
 var DOT = {
+    __CACHE: {},
 
 
-
-    CTRL: {},
 
     /**
      * The original Request
@@ -58,9 +59,19 @@ var DOT = {
      * @type {{get: {}, post: {}, json: {data: {}, event:{}}, headers: {} }}
      */
     get REQUEST () {
-        if (typeof __DOT.REQUEST === "undefined")
-            __DOT.REQUEST = copyClone(DOT_BRIDGE.REQUEST.GET());
-        return __DOT.REQUEST;
+        if (typeof DOT.__CACHE.REQUEST === "undefined")
+            DOT.__CACHE.REQUEST = copyClone(DOT_BRIDGE.SERVER.REQUEST());
+        return DOT.__CACHE.REQUEST;
+    },
+
+    /**
+     *
+     * @type {{requestMethod: string, queryString: string, self: string, scriptName: string, remoteAddr: string}}
+     */
+    get ENV () {
+        if (typeof DOT.__CACHE.ENV === "undefined")
+            DOT.__CACHE.ENV = DOT_BRIDGE.SERVER.ENV(); // Readonly
+        return DOT.__CACHE.ENV;
     },
 
     /**
@@ -95,6 +106,15 @@ var DOT = {
     },
 
     /**
+     * BASE: Include actions from other template
+     *
+     * @param fileName
+     */
+    includeActions: function (fileName) {
+        DOT_BRIDGE.FS.FS_INCLUDE_ACTIONS(fileName);
+    },
+
+    /**
      * Include a server-side extendsion located
      * beneath js/name/name2.js
      *
@@ -109,6 +129,10 @@ var DOT = {
     }
 
 };
+
+
+
+// Some server-side initit scripts
 
 
 

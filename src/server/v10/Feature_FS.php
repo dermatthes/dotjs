@@ -11,6 +11,7 @@
 
 
     use dotjs\server\core\FileLoader;
+    use dotjs\template\TemplateControllerExtractor;
     use dotjs\template\TemplateParser;
 
     class Feature_FS {
@@ -38,13 +39,28 @@
 
 
         /**
+         * Include the actions from the specified template
+         *
+         * @param $fileName
+         */
+        public function FS_INCLUDE_ACTIONS($fileName) {
+            // Overwrite the __MAIN - BLock of original Template
+            $code ="(function(){\n";
+            $code .= "\tvar __DIR__ = '" . dirname($fileName) . "';\n";
+            $code .= "\tvar __FILE__ = '" . $fileName . "';\n";
+            $extractor = new TemplateControllerExtractor();
+            $code .= $extractor->parse($this->mFileLoader->getContents($fileName));
+            $code .= "})();\n";
+            $this->mV8->executeString($code);
+        }
+
+        /**
          * DOT_BRIDGE.FS_INCLUDE()
          * -> FS.include()
          *
          * @param $fileName
          */
         public function FS_INCLUDE($fileName) {
-            // Overwrite the __MAIN - BLock of original Template
             $code ="(function(){\n";
             $code .= "\tvar __DIR__ = '" . dirname($fileName) . "';\n";
             $code .= "\tvar __FILE__ = '" . $fileName . "';\n";
@@ -53,8 +69,10 @@
             $this->mV8->executeString($code);
         }
 
-        public function FS_USE_EXTENSION($name) {
 
+
+        public function FILE_GET_CONTENTS ($fileName) {
+            return $this->mFileLoader->getContents($fileName);
         }
 
 

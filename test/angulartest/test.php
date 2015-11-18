@@ -14,8 +14,11 @@ use dotjs\server\v10\BridgeV10;
 $bridge = new BridgeV10(new FileSystemFileLoader(__DIR__ . "/demo"));
 
 
-if (isset ($_GET["call"])) {
-    $bridge->runController("site1.html", $_GET["call"]);
+
+
+if (isset ($_SERVER["HTTP_X_DOTJS_ISAJAXREQUEST"])) {
+    $params = explode("/", substr($_SERVER["PATH_INFO"], 1));
+    $bridge->runAction("site1.html", $params[0]);
     exit;
 }
 

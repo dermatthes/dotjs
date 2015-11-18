@@ -58,10 +58,11 @@
 
             $v8->registerClass("OUT", $this->mFeatureOut = new Feature_OUT());
             $v8->registerClass("FS",  $this->mFeatureFs = new Feature_FS($v8, $loader, $this->mParser));
-            $v8->registerClass("REQUEST",  new Feature_REQUEST($v8));
+            $v8->registerClass("SERVER",  new Feature_SERVER($v8));
 
             $v8->registerClass("DB",  new Feature_DB($v8));
 
+            $v8->executeString(file_get_contents(__DIR__ . "/js/_shared/toolkit.js"));
             $v8->executeString(file_get_contents(__DIR__ . "/js/boot.js"));
 
 
@@ -100,7 +101,7 @@
         }
 
 
-        public function runController ($templateName, $controller, $params=[]) {
+        public function runAction ($templateName, $action, $params=[]) {
             $extractor = new TemplateControllerExtractor();
             $jsCode = $extractor->parse($this->mFileLoader->getContents($templateName));
 
@@ -111,7 +112,12 @@
                 throw $e;
             }
 
-            $data = $this->mV8->executeString("JSON.stringify(DOT.CTRL.{$controller}());");
+            for ($i=0; $i<count ($params); $i++) {
+                $params[$i] = "\"" . addslashes($params[$i]) . "\"";
+            }
+            $paramsStr = implode(", ", $params);
+
+            $data = $this->mV8->executeString("JSON.stringify((new CTRL()).{$action}($paramsStr));");
             echo $data;
         }
 

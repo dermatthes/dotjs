@@ -13,7 +13,7 @@
             DOT.ANGULAR.printAngularInit();
 
 
-            CTRL.prototype.someAction = function (name) {
+            CTRL.prototype.someOtherAction = function (name) {
                 var data2 = DOT.REQUEST.json;
                 data2.someData = data2.someText;
                 return data2;
@@ -27,13 +27,13 @@
             angular.module("SiteApp", ["$dotremote"]).controller("TestCtrl", function ($dotremote) {
 
                 var remote = $dotremote.register(this);
-
+                remote.
                 this.someAction = function () {
                     remote.someAction("wurst");
                 };
 
                 this.someData = "Some Data";
-               // this.someText ="";
+                // this.someText ="";
             });
 
         </script>

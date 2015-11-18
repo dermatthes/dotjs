@@ -1,6 +1,7 @@
 # dotJS - V8JS powered template engine
 
-dotJS compiles angular-style templates on server-side.
+dotJS compiles angular-style templates on server-side. It lets you program both, server and client site in
+pure JavaScript.
 
 Requirements:
 

@@ -13,7 +13,7 @@
             DOT.ANGULAR.printAngularInit();
 
 
-            CTRL.prototype.someAction = function ($$observed, name) {
+            CTRL.prototype.someAction = function ($$, name, $$observed) {
                 $$observed.someData = $$observed.someText;
                 $$observed.otherText = "";
             };
@@ -25,7 +25,7 @@
 
             angular.module("SiteApp", ["$dotremote"]).controller("TestCtrl", function ($dotremote) {
 
-                var remote = $dotremote.register(this);
+                this.remote = $dotremote.register(this);
 
                 this.someAction = function () {
                     remote.someAction("wurst");
@@ -41,7 +41,7 @@
 
             <input type="text" ng-model="test.someText"/>
 
-            Dies ist der {{ test.someData }} überschriebene Content <a href="" ng-click="test.someAction();">Click mich</a>
+            Dies ist der {{ test.someData }} überschriebene Content <a href="asdfasdf" ng-click="test.remote.someAction({stopPropagation:true,preventDefault:true, event: $event})">Click mich</a>
         </div>
 
 

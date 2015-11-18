@@ -13,10 +13,9 @@
             DOT.ANGULAR.printAngularInit();
 
 
-            CTRL.prototype.someOtherAction = function (name) {
-                var data2 = DOT.REQUEST.json;
-                data2.someData = data2.someText;
-                return data2;
+            CTRL.prototype.someOtherAction = function ($$opt, $$event, name, $$scope) {
+                $$scope.wurst = "name";
+
             };
 
         </script>
@@ -42,7 +41,7 @@
 
             <input type="text" ng-model="test.someText"/>
 
-            Dies ist der {{ test.someData }} überschriebene Content <a href="" ng-click="test.someAction();">Click mich</a>
+            Dies ist der {{ test.someData }} überschriebene Content <a href="" ng-click="test.someAction({stopPropagation: true, preventDefault:true, event: $event});">Click mich</a>
         </div>
 
 

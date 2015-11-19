@@ -45,7 +45,16 @@ var CTRL = function () {
 };
 
 
-
+/**
+ *
+ * @type {{warn: Function, info: Function, debug: Function, error: Function}}
+ */
+var LOG = {
+    warn: function (){},
+    info: function (){},
+    debug: function () {},
+    error: function (){}
+};
 
 
 var DOT = {

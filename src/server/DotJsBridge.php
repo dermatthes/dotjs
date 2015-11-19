@@ -50,10 +50,10 @@ use dotjs\v10\modules\_BASE\Ext_FS;
             $this->mTemplateParser = new TemplateParser(new TargetLanguageJavaScript());
             $loader->setExtensionRoot(__DIR__ . "/../modules/");
 
-            $this->registerLowLevelExtension(new Ext_BASE());
-            $this->registerLowLevelExtension(new Ext_FS());
-            $this->registerLowLevelExtension(new Ext_OUT());
-            $this->registerLowLevelExtension(new Ext_SERVER());
+            $this->addLowLevelExtension(new Ext_BASE());
+            $this->addLowLevelExtension(new Ext_FS());
+            $this->addLowLevelExtension(new Ext_OUT());
+            $this->addLowLevelExtension(new Ext_SERVER());
 
             $this->setAutoStartLowLevelExtensions(["BASE", "OUT", "FS", "SERVER"]);
             $this->mV8 = new V8Wrapper();
@@ -93,7 +93,7 @@ use dotjs\v10\modules\_BASE\Ext_FS;
          *
          * @param LowLevelExtension $feature
          */
-        public function registerLowLevelExtension(LowLevelExtension $feature) {
+        public function addLowLevelExtension(LowLevelExtension $feature) {
             $this->mLowLevelExtensions[$feature->getName()] = $feature;
         }
 

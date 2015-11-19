@@ -9,13 +9,16 @@
 
     <block dot-block="content">
         <script language="JavaScript" remote="yes">
+            DOT.include("dot://FIREPHPLOG/FIREPHPLOG.js")
             DOT.include("dot://ANGULAR/ANGULAR.js");
+
             DOT.printBrowserLibraryCode();
 
 
             CTRL.prototype.someAction = function ($$, name, $$observed) {
                 $$observed.someData = $$observed.someText;
                 $$observed.otherText = "";
+                LOG.debug($$observed);
             };
 
         </script>
@@ -30,6 +33,7 @@
                 this.someAction = function () {
                     remote.someAction("wurst");
                 };
+
 
                 this.someData = "Some Data";
                // this.someText ="";

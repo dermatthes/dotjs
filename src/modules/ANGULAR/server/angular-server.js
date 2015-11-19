@@ -39,7 +39,7 @@ DOT.dispatchAjaxRequest = function (action, params) {
         return JSON.stringify(response);
     } catch (ex) {
         response.success = false;
-        response.errorMsg = ex;
+        response.errorMsg = ex.message;
         response.errorFn = ctrl[action].toString();
         return JSON.stringify(response);
     }

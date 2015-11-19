@@ -2,6 +2,10 @@
  * The client (browser) side of the DOTJS Framework.
  */
 
+/* @var {console} LOG */
+var LOG = console;
+
+
 
 var DOT = {
 
@@ -66,6 +70,5 @@ var DOT = {
     fileGetContents: function (fileName) {
         throw new Error("DOT.fileGetContent() not available on browser-side. **FOR SECURITY**");
     }
-
 
 };

@@ -59,6 +59,10 @@
         }
 
 
+        public function USE_EXTENSION ($name) {
+            $this->mDotJsBridge->getExtension($name);
+        }
+
 
         public function FILE_GET_CONTENTS ($fileName) {
             return $this->mDotJsBridge->getFileLoader()->getContents($fileName);

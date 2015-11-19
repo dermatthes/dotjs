@@ -6,7 +6,7 @@
  * Time: 18:32
  */
 
-namespace dotjs\server\v10;
+namespace dotjs\v10\server\vendor;
 
 
 class V8Wrapper {

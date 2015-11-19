@@ -7,7 +7,7 @@
  */
 
 
-    namespace dotjs\template;
+    namespace dotjs\v10\template;
 
 
     interface TargetLanguage {

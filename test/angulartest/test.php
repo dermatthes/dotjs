@@ -8,10 +8,10 @@
 
 require(__DIR__ . "/../../autoload.php");
 
-use dotjs\server\core\FileSystemFileLoader;
-use dotjs\server\v10\BridgeV10;
+use dotjs\v10\server\core\FileSystemFileLoader;
+use dotjs\v10\server\DotJsBridge;
 
-$bridge = new BridgeV10(new FileSystemFileLoader(__DIR__ . "/demo"));
+$bridge = new DotJsBridge(new FileSystemFileLoader(__DIR__ . "/demo"));
 
 
 

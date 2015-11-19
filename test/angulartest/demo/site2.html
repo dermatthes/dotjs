@@ -3,15 +3,10 @@
 
 
 
-
-
-
-
     <block dot-block="content">
         <script language="JavaScript" remote="yes">
-            DOT.include("dot://ANGULAR/ANGULAR.js");
-            DOT.ANGULAR.printAngularInit();
-
+            //DOT.include("dot://ANGULAR/ANGULAR.js");
+            //DOT.ANGULAR.printAngularInit();
 
             CTRL.prototype.someOtherAction = function ($$opt, $$event, name, $$scope) {
                 $$scope.wurst = "name";
@@ -21,12 +16,10 @@
         </script>
         <script language="JavaScript">
 
-
-
             angular.module("SiteApp", ["$dotremote"]).controller("TestCtrl", function ($dotremote) {
 
                 var remote = $dotremote.register(this);
-                remote.
+
                 this.someAction = function () {
                     remote.someAction("wurst");
                 };

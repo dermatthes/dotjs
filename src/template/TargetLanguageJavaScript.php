@@ -7,11 +7,12 @@
  */
 
 
-    namespace dotjs\template;
+    namespace dotjs\v10\template;
 
 
 
-    use dotjs\parser\XmlRewriter;
+
+
 
     class TargetLanguageJavaScript implements TargetLanguage {
 

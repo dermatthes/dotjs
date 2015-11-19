@@ -6,7 +6,7 @@
  * Time: 16:20
  */
 
-namespace dotjs\server\core;
+namespace dotjs\v10\server\core;
 
 
 class FileSystemFileLoader implements FileLoader {

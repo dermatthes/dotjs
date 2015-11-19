@@ -8,24 +8,20 @@
 
 
 
-namespace dotjs\server\v10;
+namespace dotjs\v10\modules\_BASE;
 
 
-use dotjs\server\v10\V8Wrapper;
+use dotjs\v10\server\core\LowLevelExtension;
+use dotjs\v10\server\DotJsBridge;
 
-class Feature_SERVER {
+class Ext_SERVER implements LowLevelExtension {
 
     const SECURE_HEADER_FORWARDED_FOR = "X-Forwarded-For";
 
-    /**
-     * @var V8Wrapper
-     */
-    private $mV8Wrapper;
 
     private $mAllowForwardedForHeader;
 
-    public function __construct (V8Wrapper $v8wrapper, $allowForwarededForHeader=false) {
-        $this->mV8Wrapper = $v8wrapper;
+    public function __construct ($allowForwarededForHeader=false) {
         $this->mAllowForwardedForHeader = $allowForwarededForHeader;
     }
 
@@ -62,5 +58,47 @@ class Feature_SERVER {
         return $response;
     }
 
+    /**
+     * The name of the Feature
+     *
+     * @return string
+     */
+    public function getName() {
+        return "SERVER";
+    }
 
+
+    /**
+     * @var DotJsBridge
+     */
+    private $mDotJsBridge;
+
+    /**
+     * Method to call once, before module is activated
+     *
+     * @param $bridge DotJsBridge
+     * @return bool
+     */
+    public function init(DotJsBridge $bridge) {
+        $this->mDotJsBridge = $bridge;
+    }
+
+    /**
+     * Return JavaScript code to send to the Browser
+     *
+     * @return string[]
+     */
+    public function getBrowserJsFiles() {
+        return [];
+    }
+
+    /**
+     * JavaScript Files to read from the Server side.
+     *
+     *
+     * @return string[]
+     */
+    public function getServerJsFiles() {
+        return [];
+    }
 }

@@ -8,10 +8,10 @@
 
 
 
-namespace dotjs\server\v10\js\DB;
+namespace dotjs\v10\server\js\DB;
 
 
-use dotjs\server\v10\V8Wrapper;
+use dotjs\v10\server\V8Wrapper;
 
 class Feature_DB {
 

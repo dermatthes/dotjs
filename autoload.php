@@ -1,7 +1,7 @@
 <?php
 
 
-namespace dotjs;
+namespace dotjs\v10;
 
 
 spl_autoload_register(function ($class) {

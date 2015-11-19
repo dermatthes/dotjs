@@ -7,7 +7,7 @@
  */
 
 
-    namespace dotjs\server\core;
+    namespace dotjs\v10\server\core;
 
 
     interface FileLoader {

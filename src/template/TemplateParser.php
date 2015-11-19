@@ -6,7 +6,7 @@
  * Time: 18:24
  */
 
-    namespace dotjs\template;
+    namespace dotjs\v10\template;
 
     class TemplateParser {
 

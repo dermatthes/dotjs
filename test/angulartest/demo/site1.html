@@ -9,7 +9,7 @@
 
     <block dot-block="content">
         <script language="JavaScript" remote="yes">
-            DOT.include("dot://FIREPHPLOG/FIREPHPLOG.js")
+            DOT.include("dot://FIREPHP/FIREPHP.js")
             DOT.include("dot://ANGULAR/ANGULAR.js");
 
             DOT.printBrowserLibraryCode();
@@ -19,6 +19,11 @@
                 $$observed.someData = $$observed.someText;
                 $$observed.otherText = "";
                 LOG.debug($$observed);
+
+                LOG.table("Wursttabelle", [
+                        ["a", "b", $$observed],
+                        ["d", "e", "f"]
+                ]);
             };
 
         </script>

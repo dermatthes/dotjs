@@ -46,6 +46,8 @@
             $v8w = $this->mDotJsBridge->getV8Wrapper();
             $fileLoader = $this->mDotJsBridge->getFileLoader();
 
+            $this->mDotJsBridge->getLogger()->debug("INCLUDE($fileName)");
+
             $code ="(function(){\n";
             $code .= "\tvar __DIR__ = '" . dirname($fileName) . "';\n";
             $code .= "\tvar __FILE__ = '" . $fileName . "';\n";
@@ -53,13 +55,15 @@
             $code .= "})();\n";
             try {
                 $v8w->executeString($code, $fileName);
-            } catch (\Exception $e) {
+            } catch (\V8JsException $e) {
+                $this->mDotJsBridge->getLogger()->error("INCLUDE($fileName): Exception occured: {$e->getMessage()}");
                 throw new \Exception("Exception loading $fileName");
             }
         }
 
 
         public function USE_EXTENSION ($name) {
+            $this->mDotJsBridge->getLogger()->debug("USE_EXTENSION($name)");
             $this->mDotJsBridge->getExtension($name);
         }
 
@@ -73,6 +77,7 @@
 
 
         public function USE_TEMPLATE ($fileName) {
+            $this->mDotJsBridge->getLogger()->debug("USE_TEMPLATE($fileName)");
             if ($this->mNextTemplate !== NULL)
                 throw new \InvalidArgumentException("You cannot extend to more than one template. Use useTemplate only once per template");
             $this->mNextTemplate = $fileName;

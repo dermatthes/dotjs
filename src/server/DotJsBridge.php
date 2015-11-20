@@ -16,6 +16,8 @@ use dotjs\v10\modules\_BASE\Ext_FS;
 
     use dotjs\v10\modules\_BASE\Ext_OUT;
     use dotjs\v10\modules\_BASE\Ext_SERVER;
+    use dotjs\v10\server\core\DotLogger;
+    use dotjs\v10\server\core\DotNullLogger;
     use dotjs\v10\server\core\FileLoader;
     use dotjs\v10\modules\_BASE\Ext_BASE;
     use dotjs\v10\modules\_BASE\Ext_FS;
@@ -44,10 +46,17 @@ use dotjs\v10\modules\_BASE\Ext_FS;
         private $mFileLoader;
 
 
+        /**
+         * @var DotLogger
+         */
+        private $mLogger;
+
 
         public function __construct (FileLoader $loader) {
+            $this->mLogger = new DotNullLogger();
             $this->mFileLoader = $loader;
             $this->mTemplateParser = new TemplateParser(new TargetLanguageJavaScript());
+
             $loader->setExtensionRoot(__DIR__ . "/../modules/");
 
             $this->addLowLevelExtension(new Ext_BASE());
@@ -73,6 +82,22 @@ use dotjs\v10\modules\_BASE\Ext_FS;
         public function setV8Runner(V8Wrapper $wrapper) {
             throw new \InvalidArgumentException("There is no reason for changing the V8Wrapper yet. This stub is only for compatibility");
         }
+
+
+        /**
+         * @return DotLogger
+         */
+        public function getLogger () {
+            return $this->mLogger;
+        }
+
+        /**
+         * @param DotLogger $logger
+         */
+        public function setLogger(DotLogger $logger) {
+            $this->mLogger = $logger;
+        }
+
 
         public function getFileLoader () {
             return $this->mFileLoader;

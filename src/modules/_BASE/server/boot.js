@@ -53,7 +53,8 @@ var LOG = {
     warn: function (){},
     info: function (){},
     debug: function () {},
-    error: function (){}
+    error: function (){},
+    table: function(label, tableRowArr){}
 };
 
 

@@ -8,12 +8,12 @@
 
 require(__DIR__ . "/../../autoload.php");
 
-use dotjs\v10\modules\FIREPHPLOG\Ext_FIREPHPLOG;
+use dotjs\v10\modules\FIREPHP\Ext_FIREPHP;
 use dotjs\v10\server\core\FileSystemFileLoader;
 use dotjs\v10\server\DotJsBridge;
 
 $bridge = new DotJsBridge(new FileSystemFileLoader(__DIR__ . "/demo"));
-$bridge->addLowLevelExtension(new Ext_FIREPHPLOG());
+$bridge->addLowLevelExtension(new Ext_FIREPHP());
 
 
 

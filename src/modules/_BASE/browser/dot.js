@@ -4,7 +4,9 @@
 
 /* @var {console} LOG */
 var LOG = console;
-
+LOG.table = function (label, tableRowArr) {
+    throw new Error("Not yet implemented on browser side");
+};
 
 
 var DOT = {

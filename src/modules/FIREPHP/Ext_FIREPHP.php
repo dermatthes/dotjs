@@ -7,33 +7,43 @@
  */
 
 
-namespace dotjs\v10\modules\FIREPHPLOG;
+namespace dotjs\v10\modules\FIREPHP;
 
 
 use dotjs\v10\server\core\LowLevelExtension;
 use dotjs\v10\server\DotJsBridge;
 
-class Ext_FIREPHPLOG implements LowLevelExtension {
+class Ext_FIREPHP implements LowLevelExtension {
 
 
 
     public function LOG ($level, $params) {
 
+        $data = [];
+        foreach ($params as $curParam) {
+            $data[] = $curParam;
+        }
+
         switch ($level) {
             case "log":
-                $this->mFirePhp->log($params);
+                $this->mFirePhp->log($data);
                 break;
             case "warn":
-                $this->mFirePhp->warn($params);
+                $this->mFirePhp->warn($data);
                 break;
             case "error":
-                $this->mFirePhp->error($params);
+                $this->mFirePhp->error($data);
                 break;
             case "info":
-                $this->mFirePhp->info($params);
+                $this->mFirePhp->info($data);
                 break;
         }
 
+    }
+
+
+    public function TABLE ($label, $tableDataArr) {
+        $this->mFirePhp->table($label, $tableDataArr);
     }
 
     /**
@@ -42,7 +52,7 @@ class Ext_FIREPHPLOG implements LowLevelExtension {
      * @return string
      */
     public function getName() {
-        return "FIREPHPLOG";
+        return "FIREPHP";
     }
 
 
@@ -66,6 +76,8 @@ class Ext_FIREPHPLOG implements LowLevelExtension {
         require_once(__DIR__ . "/vendor/FirePHP.php");
         $this->mDotJsBridge = $bridge;
         $this->mFirePhp = new \FirePHP();
+
+        $bridge->setLogger(new FirePhpDotLogger($this->mFirePhp, "[DOT-SERVER]"));
     }
 
     /**

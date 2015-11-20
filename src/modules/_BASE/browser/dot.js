@@ -59,6 +59,11 @@ var DOT = {
         throw new Error("DOT.include() not available on browser-side. **FOR SECURITY**");
     },
 
+
+    includeTemplate: function (fileName) {
+        throw new Error("DOT.includeTemplate() not available on browser-side. **FOR SECURITY**");
+    },
+
     /**
      * Include a server-side extendsion located
      * beneath js/name/name2.js

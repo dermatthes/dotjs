@@ -140,8 +140,21 @@ var DOT = {
         DOT_BRIDGE.OUT.DUMP(data);
     },
 
-    template: function (fileName) {
+    useTemplate: function (fileName) {
         DOT_BRIDGE.FS.USE_TEMPLATE(fileName);
+    },
+
+    /**
+     * Include the contents of another Template
+     *
+     * @param fileName
+     */
+    includeTemplate: function(fileName) {
+        try {
+            DOT_BRIDGE.FS.FS_INCLUDE_TEMPLATE(fileName);
+        } catch (ex) {
+            throw new Error("LowLevelCall: DOT.includeTemplate(" + fileName + "): " + ex.message + "\nStack: " + ex.stack + " (Original File: " + ex.jsFileName + ")");
+        }
     },
 
     /**

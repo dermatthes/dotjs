@@ -85,7 +85,7 @@
                 $arrayName = $matches[2];
                 $indexName = isset ($matches[4]) ? $matches[4] : "index" . $this->mIndexCounter++;
 
-                return ["for(var {$indexName}; {$indexName} < {$arrayName}.length; {$indexName}++){\n\tvar {$localName} = {$arrayName}[{$indexName}];", "};"];
+                return ["for(var {$indexName} = 0; {$indexName} < {$arrayName}.length; {$indexName}++){\n\tvar {$localName} = {$arrayName}[{$indexName}];", "};"];
             }
             return NULL;
         }

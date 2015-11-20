@@ -135,6 +135,13 @@ use dotjs\v10\modules\_BASE\Ext_FS;
         }
 
 
+        /**
+         * @param $featureName
+         */
+        public function addAutoStartLowLevelExtension ($featureName) {
+            $this->mAutoStartLowLevelExtensions[] = $featureName;
+        }
+
         private $mTemplateParser;
 
         public function setTemplateParser (TemplateParser $templateParser) {
@@ -227,7 +234,7 @@ use dotjs\v10\modules\_BASE\Ext_FS;
             try {
                 $this->mV8->executeString($jsCode);
             } catch (\V8JsException $e) {
-                echo "Fehler in: $jsCode";
+                $this->mLogger->error("Exeption runAction('$templateName', '$action'): {$e->getMessage()} ");
                 throw $e;
             }
 
@@ -238,7 +245,7 @@ use dotjs\v10\modules\_BASE\Ext_FS;
                 $jsCode = "DOT.dispatchAjaxRequest('$action', " . json_encode($params) . ")";
                 $data = $this->mV8->executeString($jsCode, $jsCode);
             } catch (\V8JsException $e) {
-                echo "Fehler in: $jsCode";
+                $this->mLogger->error("Exeption when calling DOT.dispatchAjaxRequest(): {$e->getMessage()} ");
                 throw $e;
             }
             echo $data;
@@ -248,32 +255,29 @@ use dotjs\v10\modules\_BASE\Ext_FS;
         public function runTemplate ($name) {
             $this->init();
 
-            $code = $this->mTemplateParser->parse($this->mFileLoader->getContents($name));
+            $fs = $this->getExtension("FS");
+            /* @var $fs Ext_FS */
+
 
             try {
-                $this->mV8->executeString($code, $name);
+               $fs->FS_INCLUDE_TEMPLATE($name);
             } catch (\V8JsException $e) {
-                echo "Fehler in: $code";
+                $this->mLogger->error("Exeption in Template '$name': {$e->getMessage()} ");
                 throw $e;
             }
 
 
-            $fs = $this->getExtension("FS");
+
             /* @var $fs Ext_FS */
 
             // Run the Templates
             while (($nextTemplate = $fs->getNextTemplate()) !== NULL) {
                 $fs->clearNextTemplate();
-                $code ="(function(){\n";
-                $code .= "\tvar __DIR__ = '" . dirname($nextTemplate) . "';\n";
-                $code .= "\tvar __FILE__ = '" . $nextTemplate . "';\n";
-                $code .= $this->mTemplateParser->parse($this->mFileLoader->getContents($nextTemplate));
-                $code .= "})();\n";
+
                 try {
-                    $this->mV8->executeString($code, $nextTemplate);
+                    $fs->FS_INCLUDE_TEMPLATE($nextTemplate);
                 } catch (\V8JsException $e) {
-                    echo $e->getJsFileName();
-                    echo $e->getJsSourceLine();
+                    $this->mLogger->error("Exeption in Template '$nextTemplate': {$e->getMessage()} ");
                     throw $e;
                 }
             }

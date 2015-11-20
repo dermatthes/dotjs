@@ -14,6 +14,7 @@ use dotjs\v10\server\DotJsBridge;
 
 $bridge = new DotJsBridge(new FileSystemFileLoader(__DIR__ . "/demo"));
 $bridge->addLowLevelExtension(new Ext_FIREPHP());
+$bridge->addAutoStartLowLevelExtension("FIREPHP");
 
 
 

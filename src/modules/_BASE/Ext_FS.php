@@ -62,6 +62,29 @@
         }
 
 
+        public function FS_INCLUDE_TEMPLATE ($fileName) {
+            $v8w = $this->mDotJsBridge->getV8Wrapper();
+            $fileLoader = $this->mDotJsBridge->getFileLoader();
+
+            $parser = $this->mDotJsBridge->getTemplateParser();
+
+            $this->mDotJsBridge->getLogger()->debug("INCLUDE_TEMPLATE($fileName)");
+
+            $code ="(function(){\n";
+            $code .= "\tvar __DIR__ = '" . dirname($fileName) . "';\n";
+            $code .= "\tvar __FILE__ = '" . $fileName . "';\n";
+            $code .= $parser->parse($fileLoader->getContents($fileName));
+            $code .= "})();\n";
+            try {
+                //highlight_string($code);
+                $v8w->executeString($code, $fileName);
+            } catch (\V8JsException $e) {
+                $this->mDotJsBridge->getLogger()->error("INCLUDE_TEMPLATE($fileName): Exception occured: {$e->getMessage()}");
+                throw new \Exception("Exception loading $fileName");
+            }
+        }
+
+
         public function USE_EXTENSION ($name) {
             $this->mDotJsBridge->getLogger()->debug("USE_EXTENSION($name)");
             $this->mDotJsBridge->getExtension($name);

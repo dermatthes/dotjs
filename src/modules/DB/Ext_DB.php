@@ -8,12 +8,11 @@
 
 
 
-namespace dotjs\v10\server\js\DB;
+namespace dotjs\v10\modules\DB;
 
 
-use dotjs\v10\server\V8Wrapper;
 
-class Feature_DB {
+class Ext_DB {
 
     /**
      * @var V8Wrapper
